@@ -69,8 +69,6 @@ namespace DrawLineCanvas
 		/// <param name="e"></param>
 		private void CnvDraw_MouseMove(object sender, MouseEventArgs e)
 		{
-			// Ghbdtn vbh!
-			//dvjkzhvvizsduhhviuu
 			// если левая кнопка нажата, рисуем временную линию
 			if (e.LeftButton == MouseButtonState.Pressed)
 			{
