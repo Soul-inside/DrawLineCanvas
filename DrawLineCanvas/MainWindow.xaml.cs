@@ -1,5 +1,6 @@
 ﻿// Last Change: 2014 11 13 7:45 PM
 
+using System;
 using System.Collections.Generic;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -60,6 +61,9 @@ namespace DrawLineCanvas
 		public MainWindow()
 		{
 			InitializeComponent();
+			ImgWell.Height = Height;
+			ImgWell.Width = Width;
+
 		}
 
 		/// <summary>
