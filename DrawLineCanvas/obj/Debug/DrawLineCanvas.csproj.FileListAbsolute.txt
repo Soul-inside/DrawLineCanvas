@@ -10,3 +10,5 @@ D:\Desktop\DrawLineCanvas\DrawLineCanvas\obj\Debug\DrawLineCanvas.Properties.Res
 D:\Desktop\DrawLineCanvas\DrawLineCanvas\obj\Debug\DrawLineCanvas.csproj.GenerateResource.Cache
 D:\Desktop\DrawLineCanvas\DrawLineCanvas\obj\Debug\DrawLineCanvas.exe
 D:\Desktop\DrawLineCanvas\DrawLineCanvas\obj\Debug\DrawLineCanvas.pdb
+C:\Users\Soul_insede\Desktop\DrawCanvasLine-master\DrawLineCanvas\obj\Debug\DrawLineCanvas.exe
+C:\Users\Soul_insede\Desktop\DrawCanvasLine-master\DrawLineCanvas\obj\Debug\DrawLineCanvas.pdb
