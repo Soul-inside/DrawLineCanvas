@@ -7,19 +7,19 @@
 			<ColumnDefinition Width="Auto"/>
 			<ColumnDefinition Width="Auto"/>
 		</Grid.ColumnDefinitions>
-		<StackPanel Grid.Column="0">
+		<StackPanel Grid.Column="0" Grid.ColumnSpan="3" Margin="0,0,56,0">
 			<Button Name="ButLoad" Content="Загрузить изображение" Click="ButLoad_Click" Margin="5"/>
 			<Button Name="ButCoord" Content="Задать область определения" Click="ButCoord_Click" Margin="5"/>
-			<Label Content="Координаты по оси X:" Margin="5"/>
+			<Label Content="Эквивалент градиента" Margin="5"/>
 			<Label Name="X" Content="" Margin="5"/>
-			<Label Content="Координаты по оси Y:" Margin="5"/>
+			<Label Content="Глубина, м:" Margin="5"/>
 			<Label Name="Y" Content="" Margin="5"/>
 		</StackPanel>
 
 		<!--<Viewbox HorizontalAlignment="Left" Height="560" Margin="0,0,-400,0" VerticalAlignment="Top" Width="405" Grid.Column="1">-->
-			<Canvas x:Name="CnvDraw" Grid.Column="1" Background="Transparent" MouseMove="CnvDraw_MouseMove">
-				<Image x:Name="ImgWell" Stretch="Uniform" />
-			</Canvas>
+		<Canvas x:Name="CnvDraw" Grid.Column="1" Background="Transparent" MouseMove="CnvDraw_MouseMove" Grid.ColumnSpan="2" MouseWheel="CnvDraw_MouseWheel">
+			<Image x:Name="ImgWell" Stretch="Uniform" />
+		</Canvas>
 		<!--</Viewbox>-->
 	</Grid>
 </Window>

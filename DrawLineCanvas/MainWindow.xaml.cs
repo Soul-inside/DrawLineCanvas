@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -60,6 +61,16 @@ namespace DrawLineCanvas
 		/// </summary>
 		private readonly List<LineInfo> _linesList = new List<LineInfo>();
 
+		/// <summary>
+		/// 
+		/// </summary>
+		private const double _SСALE_RATE = 1.01;
+
+		/// <summary>
+		/// Время открытия файла
+		/// </summary>
+		private DateTime _time;
+
 		public MainWindow()
 		{
 			InitializeComponent();
@@ -80,7 +91,7 @@ namespace DrawLineCanvas
 		private void CnvDraw_MouseMove(object sender, MouseEventArgs e)
 		{
 			// если левая кнопка нажата, рисуем временную линию
-			if (e.LeftButton == MouseButtonState.Pressed)
+			if (e.LeftButton == MouseButtonState.Pressed && (DateTime.Now - _time).TotalMilliseconds > 100)
 			{
 				// говорим флагу что мы начали рисовать линию
 				_drawingMode = true;
@@ -123,7 +134,6 @@ namespace DrawLineCanvas
 			else if (_drawingMode)
 			{
 				_drawingMode = false;
-
 				// Йухххууу! Мы нарисовали первую линию епта!
 				if (_firstLine)
 				{
@@ -142,6 +152,8 @@ namespace DrawLineCanvas
 				CnvDraw.Children.Add(line);
 				CnvDraw.Children.Remove(_tempLine);
 				_linesList.Add(new LineInfo(_prevX, _prevY, line));
+				X.Content = "(" + line.X1 + " : " + line.Y1 + ")";
+				Y.Content = "(" + line.X2 + " : " + line.Y2 + ")";
 
 				// запоминаем координаты
 				_prevX = _newX;
@@ -177,7 +189,11 @@ namespace DrawLineCanvas
 				_isVertical = !_isVertical;
 			}
 		}
-		
+		/// <summary>
+		/// Загрузка изображения
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
 		private void ButLoad_Click(object sender, System.Windows.RoutedEventArgs e)
 		{
 			var dlg = new OpenFileDialog
@@ -195,12 +211,31 @@ namespace DrawLineCanvas
 				bi3.UriSource = new Uri(filename, UriKind.Absolute);
 				bi3.EndInit();
 				ImgWell.Source = bi3;
+				_time = DateTime.Now;
 			}
+
 		}
 
 		private void ButCoord_Click(object sender, System.Windows.RoutedEventArgs e)
 		{
 
+		}
+
+		private void CnvDraw_MouseWheel(object sender, MouseWheelEventArgs e)
+		{
+			Canvas c = sender as Canvas;
+			ScaleTransform st = new ScaleTransform();
+			c.RenderTransform = st;
+			if (e.Delta > 0)
+			{
+				st.ScaleX *= _SСALE_RATE;
+				st.ScaleY *= _SСALE_RATE;
+			}
+			else
+			{
+				st.ScaleX /= _SСALE_RATE;
+				st.ScaleY /= _SСALE_RATE;
+			}
 		}
 	}
 
