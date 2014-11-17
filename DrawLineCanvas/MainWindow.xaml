@@ -1,12 +1,25 @@
 ﻿<Window x:Class="DrawLineCanvas.MainWindow"
 		xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-		Title="MainWindow" Height="600" Width="600" KeyDown="Window_KeyDown">
-	<Grid Background="Black">
-		<StackPanel Margin="0,0,501,0">
-			<Button Name="ButLoad" Content="Загрузить изображение" HorizontalAlignment="Left" Width="91"/>
+		Title="Скважина" Height="600" Width="600" KeyDown="Window_KeyDown">
+	<Grid Margin="5" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="Auto"/>
+			<ColumnDefinition Width="Auto"/>
+		</Grid.ColumnDefinitions>
+		<StackPanel Grid.Column="0">
+			<Button Name="ButLoad" Content="Загрузить изображение" Click="ButLoad_Click" Margin="5"/>
+			<Button Name="ButCoord" Content="Задать область определения" Click="ButCoord_Click" Margin="5"/>
+			<Label Content="Координаты по оси X:" Margin="5"/>
+			<Label Name="X" Content="" Margin="5"/>
+			<Label Content="Координаты по оси Y:" Margin="5"/>
+			<Label Name="Y" Content="" Margin="5"/>
 		</StackPanel>
-		<Image x:Name="ImgWell" Source="Well.jpg" Stretch="Uniform" />
-			<Canvas x:Name="CnvDraw" Margin="10" Background="Transparent" MouseMove="CnvDraw_MouseMove"/>
+
+		<!--<Viewbox HorizontalAlignment="Left" Height="560" Margin="0,0,-400,0" VerticalAlignment="Top" Width="405" Grid.Column="1">-->
+			<Canvas x:Name="CnvDraw" Grid.Column="1" Background="Transparent" MouseMove="CnvDraw_MouseMove">
+				<Image x:Name="ImgWell" Stretch="Uniform" />
+			</Canvas>
+		<!--</Viewbox>-->
 	</Grid>
 </Window>

@@ -4,7 +4,9 @@ using System;
 using System.Collections.Generic;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using Microsoft.Win32;
 
 namespace DrawLineCanvas
 {
@@ -61,9 +63,13 @@ namespace DrawLineCanvas
 		public MainWindow()
 		{
 			InitializeComponent();
+			ResizeImage();
+		}
+
+		private void ResizeImage()
+		{
 			ImgWell.Height = Height;
 			ImgWell.Width = Width;
-
 		}
 
 		/// <summary>
@@ -131,7 +137,7 @@ namespace DrawLineCanvas
 					Y1 = _prevY,
 					X2 = _newX,
 					Y2 = _newY,
-					Stroke = Brushes.LightGreen
+					Stroke = Brushes.Black
 				};
 				CnvDraw.Children.Add(line);
 				CnvDraw.Children.Remove(_tempLine);
@@ -170,6 +176,31 @@ namespace DrawLineCanvas
 				_linesList.RemoveAt(_linesList.Count - 1);
 				_isVertical = !_isVertical;
 			}
+		}
+		
+		private void ButLoad_Click(object sender, System.Windows.RoutedEventArgs e)
+		{
+			var dlg = new OpenFileDialog
+			{
+				FileName = " Image ",
+				DefaultExt = ".jpg",
+				Filter = " Image (.jpg)|*.jpg"
+			};
+			bool? result = dlg.ShowDialog();
+			if (result == true)
+			{
+				string filename = dlg.FileName;
+				var bi3 = new BitmapImage();
+				bi3.BeginInit();
+				bi3.UriSource = new Uri(filename, UriKind.Absolute);
+				bi3.EndInit();
+				ImgWell.Source = bi3;
+			}
+		}
+
+		private void ButCoord_Click(object sender, System.Windows.RoutedEventArgs e)
+		{
+
 		}
 	}
 
