@@ -48,21 +48,21 @@
 				Margin="5"/>
 			<Label Name="Y" 
 				Margin="5"/>
+			<Slider />
 		</StackPanel>
 		<ScrollViewer HorizontalScrollBarVisibility="Auto" Grid.Column="1">
-			<Viewbox>
-		<Image x:Name="ImgWell"
-			Grid.Column="1" 
-			VerticalAlignment="Stretch" 
-			Stretch="Uniform" 
-			MouseWheel="CnvDraw_MouseWheel" 
-			RenderTransformOrigin="0.5,0.5" OverridesDefaultStyle="True"/>
-				</Viewbox>
-		</ScrollViewer>
-		<Canvas x:Name="CnvDraw" 
+			<Canvas x:Name="CnvDraw" 
 				Grid.Column="1" 
 				Background="Transparent" 
 				ClipToBounds="True"
-				MouseMove="CnvDraw_MouseMove"/>
+				MouseMove="CnvDraw_MouseMove" 
+				Width="0" Height="0">
+				<Image x:Name="ImgWell"
+			VerticalAlignment="Stretch" 
+			Stretch="Uniform" 
+			RenderTransformOrigin="0.5,0.5" OverridesDefaultStyle="True"/>
+			</Canvas>
+		</ScrollViewer>
+
 	</Grid>
 </Window>

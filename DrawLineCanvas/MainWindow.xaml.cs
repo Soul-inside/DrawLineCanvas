@@ -9,6 +9,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Microsoft.Win32;
 
+
 namespace DrawLineCanvas
 {
 	/// <summary>
@@ -72,26 +73,30 @@ namespace DrawLineCanvas
 		private bool _drowRectangle;
 
 		/// <summary>
-		/// Вычисление координат по х
+		/// Начальная точка для построения квадрата по оси X
 		/// </summary>
-		private double _CoordX;
+		private double begin_x;
 
 		/// <summary>
-		/// Вычисление координат по у
+		/// Начальная точка для построения квадрата по оси Y
 		/// </summary>
-		private double _CoordY;
+		private double begin_y;
 
 		public MainWindow()
 		{
 			InitializeComponent();
-			ResizeImage();
+			
 			_drowRectangle = false;
 		}
 
 		private void ResizeImage()
 		{
-			ImgWell.Height = Height;
-			ImgWell.Width = Width;
+			//ImgWell.Height = CnvDraw.Height;
+			//ImgWell.Width = CnvDraw.Width;
+			CnvDraw.Height = ImgWell.Source.Height;
+			CnvDraw.Width = ImgWell.Source.Width;
+			
+			
 		}
 
 		/// <summary>
@@ -104,16 +109,16 @@ namespace DrawLineCanvas
 			//режим задания области определения
 			if (_drowRectangle && e.LeftButton == MouseButtonState.Pressed)
 			{
-				var rectangle = new Rectangle();
-				rectangle.Stroke = Brushes.LightBlue;
-				rectangle.Width = 400;
-				rectangle.Height = 400;
+				
+				begin_x = e.GetPosition(CnvDraw).X;
+				begin_y = e.GetPosition(CnvDraw).Y;
+				var rectangle = new Rectangle {Stroke = Brushes.LightBlue, Width = 400, Height = 400};
 				//Canvas.SetLeft(rectangle, 0);
 				//Canvas.SetTop(rectangle, 0);
 				CnvDraw.Children.Add(rectangle);
 				//переопределяем канвас под область определения
-				//CnvDraw.Height = rectangle.Height;
-				//CnvDraw.Width = rectangle.Width;
+				CnvDraw.Height = rectangle.Height;
+				CnvDraw.Width = rectangle.Width;
 				_drowRectangle = false;
 			}
 			else
@@ -242,8 +247,9 @@ namespace DrawLineCanvas
 				bi3.EndInit();
 				ImgWell.Source = bi3;
 				_time = DateTime.Now;
+				
 			}
-
+			ResizeImage();
 		}
 
 		/// <summary>
