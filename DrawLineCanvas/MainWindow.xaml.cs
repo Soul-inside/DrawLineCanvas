@@ -71,6 +71,16 @@ namespace DrawLineCanvas
 		/// </summary>
 		private bool _drowRectangle;
 
+		/// <summary>
+		/// Вычисление координат по х
+		/// </summary>
+		private double _CoordX;
+
+		/// <summary>
+		/// Вычисление координат по у
+		/// </summary>
+		private double _CoordY;
+
 		public MainWindow()
 		{
 			InitializeComponent();
@@ -92,18 +102,18 @@ namespace DrawLineCanvas
 		private void CnvDraw_MouseMove(object sender, MouseEventArgs e)
 		{
 			//режим задания области определения
-			if (_drowRectangle)
+			if (_drowRectangle && e.LeftButton == MouseButtonState.Pressed)
 			{
 				var rectangle = new Rectangle();
-				rectangle.Stroke = Brushes.Red;
-				rectangle.Width = 300;
-				rectangle.Height = 300;
-				Canvas.SetLeft(rectangle, 0);
-				Canvas.SetTop(rectangle, 0);
+				rectangle.Stroke = Brushes.LightBlue;
+				rectangle.Width = 400;
+				rectangle.Height = 400;
+				//Canvas.SetLeft(rectangle, 0);
+				//Canvas.SetTop(rectangle, 0);
 				CnvDraw.Children.Add(rectangle);
 				//переопределяем канвас под область определения
-				CnvDraw.Height = rectangle.Height;
-				CnvDraw.Width = rectangle.Width;
+				//CnvDraw.Height = rectangle.Height;
+				//CnvDraw.Width = rectangle.Width;
 				_drowRectangle = false;
 			}
 			else
@@ -170,8 +180,9 @@ namespace DrawLineCanvas
 					CnvDraw.Children.Add(line);
 					CnvDraw.Children.Remove(_tempLine);
 					_linesList.Add(new LineInfo(_prevX, _prevY, line));
-					X.Content = "(" + line.X1 + " : " + line.Y1 + ")";
-					Y.Content = "(" + line.X2 + " : " + line.Y2 + ")";
+					//определение ребаных координат линии
+					X.Content = Math.Abs(line.X1 - line.X2);
+					Y.Content = Math.Abs(line.Y1 - line.Y2);
 
 					// запоминаем координаты
 					_prevX = _newX;
@@ -246,7 +257,7 @@ namespace DrawLineCanvas
 		}
 
 		/// <summary>
-		/// Масштабирование изображения
+		/// Масштабирование изображения, которое, блять, неработает!!!
 		/// </summary>
 		/// <param name="sender"></param>
 		/// <param name="e"></param>

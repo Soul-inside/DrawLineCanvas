@@ -16,7 +16,31 @@
 					Content="Задать область определения" 
 					Click="ButCoord_Click" 
 					Margin="5"/>
-			<Label Content="Эквивалент градиента" 
+			<Label Content="Начальное значение градиента"
+				Margin="5"/>
+			<TextBox Name="TextXmin"
+				Margin="5"/>
+			<Label Content="Конечное значение градиента"
+				Margin="5"/>
+			<TextBox Name="TextXmax"
+				Margin="5"/>
+			<Label Content="Шаг разбиения градиента"
+				Margin="5"/>
+			<TextBox Name="TextStepX"
+				Margin="5"/>
+			<Label Content="Начальное значение глубины"
+				Margin="5"/>
+			<TextBox Name="TextYmin"
+				Margin="5"/>
+			<Label Content="Конечное значение глубины"
+				Margin="5"/>
+			<TextBox Name="TextYmax"
+				Margin="5"/>
+			<Label Content="Шаг разбиения глубины"
+				Margin="5"/>
+			<TextBox Name="TextStepY"
+				Margin="5"/>
+			<Label Content="Эквивалент градиента:" 
 				Margin="5"/>
 			<Label Name="X" 
 				Margin="5"/>
@@ -32,7 +56,7 @@
 			VerticalAlignment="Stretch" 
 			Stretch="Uniform" 
 			MouseWheel="CnvDraw_MouseWheel" 
-			RenderTransformOrigin="0.5,0.5"/>
+			RenderTransformOrigin="0.5,0.5" OverridesDefaultStyle="True"/>
 				</Viewbox>
 		</ScrollViewer>
 		<Canvas x:Name="CnvDraw" 
@@ -40,6 +64,5 @@
 				Background="Transparent" 
 				ClipToBounds="True"
 				MouseMove="CnvDraw_MouseMove"/>
-
 	</Grid>
 </Window>
