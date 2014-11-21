@@ -70,7 +70,7 @@ namespace DrawLineCanvas
 		/// <summary>
 		/// Выделение области определения функции
 		/// </summary>
-		private bool _drowRectangle;
+		private bool _drawRectangle;
 
 		/// <summary>
 		/// Начальная точка для построения квадрата по оси X
@@ -86,7 +86,7 @@ namespace DrawLineCanvas
 		{
 			InitializeComponent();
 			
-			_drowRectangle = false;
+			_drawRectangle = false;
 		}
 
 		private void ResizeImage()
@@ -107,7 +107,7 @@ namespace DrawLineCanvas
 		private void CnvDraw_MouseMove(object sender, MouseEventArgs e)
 		{
 			//режим задания области определения
-			if (_drowRectangle && e.LeftButton == MouseButtonState.Pressed)
+			if (_drawRectangle && e.LeftButton == MouseButtonState.Pressed)
 			{
 				
 				begin_x = e.GetPosition(CnvDraw).X;
@@ -119,7 +119,7 @@ namespace DrawLineCanvas
 				//переопределяем канвас под область определения
 				CnvDraw.Height = rectangle.Height;
 				CnvDraw.Width = rectangle.Width;
-				_drowRectangle = false;
+				_drawRectangle = false;
 			}
 			else
 			{
@@ -259,7 +259,7 @@ namespace DrawLineCanvas
 		/// <param name="e"></param>
 		private void ButCoord_Click(object sender, System.Windows.RoutedEventArgs e)
 		{
-			_drowRectangle = true;
+			_drawRectangle = true;
 		}
 
 		/// <summary>
