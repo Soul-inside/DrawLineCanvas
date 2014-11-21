@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Net.Mime;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -60,11 +61,6 @@ namespace DrawLineCanvas
 		///     Список всех нарисованных линий
 		/// </summary>
 		private readonly List<LineInfo> _linesList = new List<LineInfo>();
-
-		/// <summary>
-		/// 
-		/// </summary>
-		private const double _SСALE_RATE = 1.01;
 
 		/// <summary>
 		/// Время открытия файла
@@ -216,26 +212,29 @@ namespace DrawLineCanvas
 
 		}
 
+		/// <summary>
+		/// Задание области определения функции
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
 		private void ButCoord_Click(object sender, System.Windows.RoutedEventArgs e)
 		{
 
 		}
 
+		/// <summary>
+		/// Масштабирование изображения
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
 		private void CnvDraw_MouseWheel(object sender, MouseWheelEventArgs e)
 		{
-			Canvas c = sender as Canvas;
-			ScaleTransform st = new ScaleTransform();
-			c.RenderTransform = st;
-			if (e.Delta > 0)
-			{
-				st.ScaleX *= _SСALE_RATE;
-				st.ScaleY *= _SСALE_RATE;
-			}
-			else
-			{
-				st.ScaleX /= _SСALE_RATE;
-				st.ScaleY /= _SСALE_RATE;
-			}
+			//Image im = sender as Image;
+			var st = new ScaleTransform();
+			ImgWell.RenderTransform = st;
+			var zoom = e.Delta > 0 ? .2 : -.2;
+				st.ScaleX += zoom;
+				st.ScaleY += zoom;
 		}
 	}
 
