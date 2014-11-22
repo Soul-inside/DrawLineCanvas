@@ -85,18 +85,16 @@ namespace DrawLineCanvas
 		public MainWindow()
 		{
 			InitializeComponent();
-			
 			_drawRectangle = false;
 		}
 
+		/// <summary>
+		/// Канвас подгоняем под размер изображения
+		/// </summary>
 		private void ResizeImage()
 		{
-			//ImgWell.Height = CnvDraw.Height;
-			//ImgWell.Width = CnvDraw.Width;
 			CnvDraw.Height = ImgWell.Source.Height;
 			CnvDraw.Width = ImgWell.Source.Width;
-			
-			
 		}
 
 		/// <summary>
@@ -260,21 +258,6 @@ namespace DrawLineCanvas
 		private void ButCoord_Click(object sender, System.Windows.RoutedEventArgs e)
 		{
 			_drawRectangle = true;
-		}
-
-		/// <summary>
-		/// Масштабирование изображения, которое, блять, неработает!!!
-		/// </summary>
-		/// <param name="sender"></param>
-		/// <param name="e"></param>
-		private void CnvDraw_MouseWheel(object sender, MouseWheelEventArgs e)
-		{
-			//Image im = sender as Image;
-			var st = new ScaleTransform();
-			ImgWell.RenderTransform = st;
-			var zoom = e.Delta > 0 ? .2 : -.2;
-				st.ScaleX += zoom;
-				st.ScaleY += zoom;
 		}
 	}
 
