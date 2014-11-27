@@ -21,19 +21,19 @@
 			<Label Content="Начальное значение градиента"
 				Margin="5"/>
 			<TextBox Name="TextXmin"
-				Margin="5"/>
+				Margin="5" Text="0.8"/>
 			<Label Content="Конечное значение градиента"
 				Margin="5"/>
 			<TextBox Name="TextXmax"
-				Margin="5"/>
+				Margin="5" Text="2.4"/>
 			<Label Content="Начальное значение глубины"
 				Margin="5"/>
 			<TextBox Name="TextYmin"
-				Margin="5"/>
+				Margin="5" Text="0"/>
 			<Label Content="Конечное значение глубины"
 				Margin="5"/>
 			<TextBox Name="TextYmax"
-				Margin="5"/>
+				Margin="5" Text="4250"/>
 			<Label Content="Эквивалент градиента:" 
 				Margin="5"/>
 			<Label Name="X" 
