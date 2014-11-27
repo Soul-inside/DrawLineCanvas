@@ -22,3 +22,15 @@ C:\Users\Soul_insede\Desktop\DrawCanvasLine-master\DrawLineCanvas\obj\Debug\Draw
 C:\Users\Soul_insede\Desktop\DrawCanvasLine-master\DrawLineCanvas\obj\Debug\DrawLineCanvas.g.resources
 C:\Users\Soul_insede\Desktop\DrawCanvasLine-master\DrawLineCanvas\obj\Debug\DrawLineCanvas.Properties.Resources.resources
 C:\Users\Soul_insede\Desktop\DrawCanvasLine-master\DrawLineCanvas\obj\Debug\DrawLineCanvas.csproj.GenerateResource.Cache
+C:\Users\Soul_insede\Desktop\DrawCanvasLine-master - копия\DrawLineCanvas\obj\Debug\DrawLineCanvas.exe
+C:\Users\Soul_insede\Desktop\DrawCanvasLine-master - копия\DrawLineCanvas\obj\Debug\DrawLineCanvas.pdb
+C:\Users\Soul_insede\Desktop\DrawCanvasLine-master - копия\DrawLineCanvas\bin\Debug\DrawLineCanvas.exe
+C:\Users\Soul_insede\Desktop\DrawCanvasLine-master - копия\DrawLineCanvas\bin\Debug\DrawLineCanvas.pdb
+C:\Users\Soul_insede\Desktop\DrawCanvasLine-master - копия\DrawLineCanvas\obj\Debug\DrawLineCanvas.csprojResolveAssemblyReference.cache
+C:\Users\Soul_insede\Desktop\DrawCanvasLine-master - копия\DrawLineCanvas\obj\Debug\MainWindow.baml
+C:\Users\Soul_insede\Desktop\DrawCanvasLine-master - копия\DrawLineCanvas\obj\Debug\MainWindow.g.cs
+C:\Users\Soul_insede\Desktop\DrawCanvasLine-master - копия\DrawLineCanvas\obj\Debug\App.g.cs
+C:\Users\Soul_insede\Desktop\DrawCanvasLine-master - копия\DrawLineCanvas\obj\Debug\DrawLineCanvas_MarkupCompile.cache
+C:\Users\Soul_insede\Desktop\DrawCanvasLine-master - копия\DrawLineCanvas\obj\Debug\DrawLineCanvas.g.resources
+C:\Users\Soul_insede\Desktop\DrawCanvasLine-master - копия\DrawLineCanvas\obj\Debug\DrawLineCanvas.Properties.Resources.resources
+C:\Users\Soul_insede\Desktop\DrawCanvasLine-master - копия\DrawLineCanvas\obj\Debug\DrawLineCanvas.csproj.GenerateResource.Cache

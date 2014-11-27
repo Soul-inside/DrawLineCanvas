@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -71,7 +72,7 @@ namespace DrawLineCanvas
 		/// <summary>
 		/// Выделение области определения функции
 		/// </summary>
-		private readonly bool _drawRectangle;
+		private bool _drawRectangle;
 
 		/// <summary>
 		/// Первая точка на экране, с которой начинается выделение прямоугольника (Левая верхняя)
@@ -84,19 +85,14 @@ namespace DrawLineCanvas
 		static Point _secondPoint;
 
 		/// <summary>
-		/// Прямоугольник для ручного выделения области для снятия скриншота с части экрана
+		/// Прямоугольник для ручного выделения области
 		/// </summary>
-		static Rectangle _rect;
+		static Rectangle _rect = _rect = new Rectangle { Stroke = Brushes.Black, StrokeThickness = 2, HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Top };
 
 		/// <summary>
 		/// Прямоугольная область для рисования не затенённой части изображения 
 		/// </summary>
 		static Int32Rect _rectForDraw;
-
-		/// <summary>
-		/// Толщина линий прямоугольника
-		/// </summary>
-		static Double rectThickness { get; set; }
 
 
 		public MainWindow()
@@ -124,10 +120,13 @@ namespace DrawLineCanvas
 			//режим задания области определения
 			if (_drawRectangle && e.LeftButton == MouseButtonState.Pressed)
 			{
+				_secondPoint = e.GetPosition(CnvDraw);
+				MoveDrawRectangle(_firstPoint, _secondPoint);
 			}
 			else
 			{
 				// если левая кнопка нажата, рисуем временную линию
+				
 				if (e.LeftButton == MouseButtonState.Pressed && (DateTime.Now - _time).TotalMilliseconds > 100)
 				{
 					// говорим флагу что мы начали рисовать линию
@@ -137,7 +136,7 @@ namespace DrawLineCanvas
 					if (_firstLine)
 					{
 						_prevX = e.GetPosition(CnvDraw).X;
-						_prevY = 0;
+						_prevY = _firstPoint.Y;
 						_newX = _prevX;
 						_newY = e.GetPosition(CnvDraw).Y;
 					}
@@ -163,7 +162,7 @@ namespace DrawLineCanvas
 						Y1 = _prevY,
 						X2 = _newX,
 						Y2 = _newY,
-						Stroke = Brushes.Red
+						Stroke = Brushes.DarkCyan
 					};
 					CnvDraw.Children.Add(_tempLine);
 				}
@@ -184,21 +183,43 @@ namespace DrawLineCanvas
 						Y1 = _prevY,
 						X2 = _newX,
 						Y2 = _newY,
-						Stroke = Brushes.Black
+						Stroke = Brushes.DarkBlue
 					};
+					line.StrokeThickness = 5;
 					CnvDraw.Children.Add(line);
 					CnvDraw.Children.Remove(_tempLine);
 					_linesList.Add(new LineInfo(_prevX, _prevY, line));
 					//определение ребаных координат линии
-					X.Content = Math.Abs(line.X1 - line.X2);
-					Y.Content = Math.Abs(line.Y1 - line.Y2);
+					if (TextXmin.Text.Equals("") || TextXmax.Text.Equals("") || TextYmin.Text.Equals("") || TextYmax.Text.Equals(""))
+					{
+						MessageBox.Show("Вы не ввели все необходимые данные!", "Внимание" , MessageBoxButton.OK);
+					}
+					else
+					{
+						var ci = new CultureInfo("en-US")
+						{NumberFormat = new NumberFormatInfo() {NumberDecimalSeparator = "."}};
+						try
+						{
+							var xmin = Convert.ToDouble(TextXmin.Text.Replace(",", ".").Replace("ю", ".").Replace("б", "."), ci);
+							var xmax = Convert.ToDouble(TextXmax.Text.Replace(",", ".").Replace("ю", ".").Replace("б", "."), ci);
+							var ymin = Convert.ToDouble(TextYmin.Text.Replace(",", ".").Replace("ю", ".").Replace("б", "."), ci);
+							var ymax = Convert.ToDouble(TextYmax.Text.Replace(",", ".").Replace("ю", ".").Replace("б", "."), ci);
+							X.Content = ((_prevX - _firstPoint.X) / (_rect.Width) * (xmin - xmax) + xmin).ToString("N2")
+										+ " ; " + ((_newX - _firstPoint.X) / (_rect.Width) * (xmin - xmax) + xmin).ToString("N2");
+							Y.Content = (Math.Abs((_prevY - _firstPoint.Y) / (_rect.Height) * (ymin - ymax) + ymin)).ToString("N2")
+										+ " ; " + (Math.Abs((_newY - _firstPoint.Y) / (_rect.Height) * (ymin - ymax) + ymin).ToString("N2")); ;
+						}
+						catch (FormatException)
+						{
+							MessageBox.Show("вы ввели некорректные данные!");
+						}
+					}
+						// запоминаем координаты
+						_prevX = _newX;
+						_prevY = _newY;
 
-					// запоминаем координаты
-					_prevX = _newX;
-					_prevY = _newY;
-
-					// переключаем режим рисования на обратный
-					_isVertical = !_isVertical;
+						// переключаем режим рисования на обратный
+						_isVertical = !_isVertical;
 				}
 			}
 		}
@@ -263,24 +284,11 @@ namespace DrawLineCanvas
 		/// <param name="e"></param>
 		private void ButCoord_Click(object sender, RoutedEventArgs e)
 		{
-			Rectngle_Draw();
-		}
-
-		/// <summary>
-		/// Запустить метод ручного выделения прямоугольной области пользователем, 
-		/// рисования линий
-		/// </summary>
-		private void Rectngle_Draw()
-		{
-			_rect = new Rectangle();
-			_rect.Stroke = Brushes.Black;
-			_rect.StrokeThickness = 2;
-			_rect.HorizontalAlignment = HorizontalAlignment.Left;
-			_rect.VerticalAlignment = VerticalAlignment.Top;
-
+			CnvDraw.Children.Remove(_rect);
+			_rect = new Rectangle { Stroke = Brushes.Red, StrokeThickness = 5, HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Top };
 			Canvas.SetTop(_rect, _firstPoint.Y);
 			Canvas.SetLeft(_rect, _firstPoint.X);
-			CnvDraw.Children.Add(_rect);
+			_drawRectangle = true;
 		}
 
 		/// <summary>
@@ -290,77 +298,65 @@ namespace DrawLineCanvas
 		/// <param name="e"></param>
 		private void MainWindow_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
 		{
-			_firstPoint = e.GetPosition(CnvDraw);
-			MoveDrawRectangle(_firstPoint, _firstPoint);
+			if (_drawRectangle)
+			{
+				_firstPoint = e.GetPosition(CnvDraw);
+				MoveDrawRectangle(_firstPoint, _firstPoint);
+			}
 		}
 
 		/// <summary>
-		/// Отпускание левой кнопки мыши на канвасе содержащем изображение всего экрана
+		/// Отпускание левой кнопки мыши на канвасе, содержащем изображение всего экрана
 		/// </summary>
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
 		private void MainWindow_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
 		{
-			var rectangle = new Int32Rect();
+			if (_drawRectangle)
+			{
+				var rectangle = new Int32Rect();
+				if (_firstPoint.X > _secondPoint.X)
+				{
+					rectangle.X = (int)(_secondPoint.X + _rect.StrokeThickness);
+					rectangle.Width = (int)(_firstPoint.X - _secondPoint.X - _rect.StrokeThickness * 2);
+					if (rectangle.Width < 1)
+					{
+						rectangle.Width = 1;
+					}
+				}
+				else
+				{
+					rectangle.X = (int)(_firstPoint.X);// косяк вадим
+					rectangle.Width = (int)(_secondPoint.X - _firstPoint.X);
+					if (rectangle.Width < 1)
+					{
+						rectangle.Width = 1;
+					}
+				}
 
-			if (_firstPoint.X > _secondPoint.X)
-			{
-				rectangle.X = (int)(_secondPoint.X + _rect.StrokeThickness);
-				rectangle.Width = (int)(_firstPoint.X - _secondPoint.X - _rect.StrokeThickness * 2);
-				if (rectangle.Width < 1)
+				if (_firstPoint.Y > _secondPoint.Y)
 				{
-					rectangle.Width = 0;
+					rectangle.Y = (int)(_secondPoint.Y + _rect.StrokeThickness);
+					rectangle.Height = (int)(_firstPoint.Y - _secondPoint.Y - _rect.StrokeThickness * 2);
+					if (rectangle.Height < 1)
+					{
+						rectangle.Height = 1;
+					}
 				}
-			}
-			else
-			{
-				rectangle.X = (int)(_firstPoint.X + _rect.StrokeThickness);
-				rectangle.Width = (int)(_secondPoint.X - _firstPoint.X - _rect.StrokeThickness * 2);
-				if (rectangle.Width < 1)
+				else
 				{
-					rectangle.Width = 1;
+					rectangle.Y = (int)(_firstPoint.Y + _rect.StrokeThickness);
+					rectangle.Height = (int)(_secondPoint.Y - _firstPoint.Y - _rect.StrokeThickness * 2);
+					if (rectangle.Height < 1)
+					{
+						rectangle.Height = 1;
+					}
 				}
+				CnvDraw.Children.Add(_rect);
+				_drawRectangle = false;
 			}
-
-			if (_firstPoint.Y > _secondPoint.Y)
-			{
-				rectangle.Y = (int)(_secondPoint.Y + _rect.StrokeThickness);
-				rectangle.Height = (int)(_firstPoint.Y - _secondPoint.Y - _rect.StrokeThickness * 2);
-				if (rectangle.Height < 1)
-				{
-					rectangle.Height = 1;
-				}
-			}
-			else
-			{
-				rectangle.Y = (int)(_firstPoint.Y + _rect.StrokeThickness);
-				rectangle.Height = (int)(_secondPoint.Y - _firstPoint.Y - _rect.StrokeThickness * 2);
-				if (rectangle.Height < 1)
-				{
-					rectangle.Height = 1;
-				}
-			}
-			CnvDraw.Height = (int)_rect.Height;
-			CnvDraw.Width = (int)_rect.Width;
 		}
 
-		/// <summary>
-		/// Движение курсора мыши по канвасу содержащему изображение
-		/// </summary>
-		/// <param name="sender"></param>
-		/// <param name="e"></param>
-		private void MainWindow_MouseMove(object sender, MouseEventArgs e)
-		{
-			if (e.LeftButton == MouseButtonState.Pressed)
-			{
-				_secondPoint = e.GetPosition(CnvDraw);
-				if (_secondPoint.X > SystemParameters.PrimaryScreenWidth)
-				{
-					_secondPoint.X = SystemParameters.PrimaryScreenWidth;
-				}
-				MoveDrawRectangle(_firstPoint, _secondPoint);
-			}
-		}
 
 		/// <summary>
 		/// Растянуть/Переместить прямоугольник на указанные координаты
@@ -369,35 +365,37 @@ namespace DrawLineCanvas
 		/// <param name="pointRightBottom">Правый нижний угол</param>
 		private void MoveDrawRectangle(Point pointLeftTop, Point pointRightBottom)
 		{
-			_rectForDraw = new Int32Rect();
-			if (pointLeftTop.X > pointRightBottom.X)
+			if (_drawRectangle)
 			{
-				Canvas.SetLeft(_rect, pointRightBottom.X);
-				_rect.Width = pointLeftTop.X - pointRightBottom.X;
-				_rectForDraw.X = (int)pointRightBottom.X;
-			}
-			else
-			{
-				Canvas.SetLeft(_rect, pointLeftTop.X);
-				_rect.Width = pointRightBottom.X - pointLeftTop.X;
-				_rectForDraw.X = (int)pointLeftTop.X;
-			}
+				_rectForDraw = new Int32Rect();
+				if (pointLeftTop.X > pointRightBottom.X)
+				{
+					Canvas.SetLeft(_rect, pointRightBottom.X);
+					_rect.Width = pointLeftTop.X - pointRightBottom.X;
+					_rectForDraw.X = (int)pointRightBottom.X;
+				}
+				else
+				{
+					Canvas.SetLeft(_rect, pointLeftTop.X); // косяк Настя
+					_rect.Width = pointRightBottom.X - pointLeftTop.X;
+					_rectForDraw.X = (int)pointLeftTop.X;
+				}
 
-			if (pointLeftTop.Y > pointRightBottom.Y)
-			{
-				Canvas.SetTop(_rect, pointRightBottom.Y);
-				_rect.Height = pointLeftTop.Y - pointRightBottom.Y;
-				_rectForDraw.Y = (int)pointRightBottom.Y;
+				if (pointLeftTop.Y > pointRightBottom.Y)
+				{
+					Canvas.SetTop(_rect, pointRightBottom.Y);
+					_rect.Height = pointLeftTop.Y - pointRightBottom.Y;
+					_rectForDraw.Y = (int)pointRightBottom.Y;
+				}
+				else
+				{
+					Canvas.SetTop(_rect, pointLeftTop.Y);
+					_rect.Height = pointRightBottom.Y - pointLeftTop.Y;
+					_rectForDraw.Y = (int)pointLeftTop.Y;
+				}
+				_rectForDraw.Width = (int)_rect.Width;
+				_rectForDraw.Height = (int)_rect.Height;
 			}
-			else
-			{
-				Canvas.SetTop(_rect, pointLeftTop.Y);
-				_rect.Height = pointRightBottom.Y - pointLeftTop.Y;
-				_rectForDraw.Y = (int)pointLeftTop.Y;
-			}
-			_rectForDraw.Width = (int)_rect.Width;
-			_rectForDraw.Height = (int)_rect.Height;
-			
 		}
 	}
 
@@ -434,11 +432,4 @@ namespace DrawLineCanvas
 			LineReference = lineReference;
 		}
 	}
-
-	//прам пам пам
-
-
-
-
-
 }

@@ -2,13 +2,12 @@
 		xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 		Title="Скважина" 
-		KeyDown="Window_KeyDown" 
-		
+		KeyDown="Window_KeyDown" Height="583" 
 		>
 	<Grid Margin="5">
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition Width="Auto"/>
-			<ColumnDefinition Width="*" />
+			<ColumnDefinition Width="*"/>
 		</Grid.ColumnDefinitions>
 		<StackPanel Grid.Column="0">
 			<Button Name="ButLoad" 
@@ -27,10 +26,6 @@
 				Margin="5"/>
 			<TextBox Name="TextXmax"
 				Margin="5"/>
-			<Label Content="Шаг разбиения градиента"
-				Margin="5"/>
-			<TextBox Name="TextStepX"
-				Margin="5"/>
 			<Label Content="Начальное значение глубины"
 				Margin="5"/>
 			<TextBox Name="TextYmin"
@@ -38,10 +33,6 @@
 			<Label Content="Конечное значение глубины"
 				Margin="5"/>
 			<TextBox Name="TextYmax"
-				Margin="5"/>
-			<Label Content="Шаг разбиения глубины"
-				Margin="5"/>
-			<TextBox Name="TextStepY"
 				Margin="5"/>
 			<Label Content="Эквивалент градиента:" 
 				Margin="5"/>
@@ -51,35 +42,40 @@
 				Margin="5"/>
 			<Label Name="Y" 
 				Margin="5"/>
+			<Label Name="w"/>
 			<Slider Name="sliZoom"
-				Minimum="0.25" Maximum="3.00" Value="1.00"
+				Minimum="0.25" Maximum="2.00" Value="1.00"
 				SmallChange="0.25" LargeChange="0.25"
 				TickFrequency="0.25" TickPlacement="BottomRight"
-				IsSnapToTickEnabled="True"/>
+				IsSnapToTickEnabled="True" Height="40" RenderTransformOrigin="0.5,0.5">
+				<Slider.RenderTransform>
+					<TransformGroup>
+						<ScaleTransform ScaleY="-1"/>
+						<SkewTransform/>
+						<RotateTransform/>
+						<TranslateTransform/>
+					</TransformGroup>
+				</Slider.RenderTransform>
+			</Slider>
 		</StackPanel>
 		<ScrollViewer HorizontalScrollBarVisibility="Auto" Grid.Column="1">
 			<Canvas x:Name="CnvDraw" 
-				Grid.Column="1" 
 				Background="Transparent" 
 				ClipToBounds="True"
-					
-				
-				MouseMove ="MainWindow_MouseMove"	
+				MouseMove ="CnvDraw_MouseMove"	
 				MouseLeftButtonDown="MainWindow_MouseLeftButtonDown"
 				MouseLeftButtonUp="MainWindow_MouseLeftButtonUp"
-					
 				Width="0" Height="0">
-					<Image x:Name="ImgWell"
+				<Image x:Name="ImgWell"
 						VerticalAlignment="Stretch" 
 						Stretch="Uniform" 
 						RenderTransformOrigin="0.5,0.5" OverridesDefaultStyle="True"/>
-					<Canvas.LayoutTransform>
+				<Canvas.LayoutTransform>
 						<ScaleTransform
 							ScaleX="{Binding ElementName=sliZoom, Path=Value}"
 							ScaleY="{Binding ElementName=sliZoom, Path=Value}"/>
 					</Canvas.LayoutTransform>
 			</Canvas>
 		</ScrollViewer>
-
 	</Grid>
 </Window>
