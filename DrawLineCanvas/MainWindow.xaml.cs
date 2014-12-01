@@ -20,12 +20,12 @@ namespace DrawLineCanvas
 	public partial class MainWindow
 	{
 		/// <summary>
-		///     Мы рисуем первую линию
+		///     Первая линия
 		/// </summary>
 		private bool _firstLine = true;
 
 		/// <summary>
-		///     В настоящий момент мы рисуем линию, а не просто елозим мышкой
+		///     Режим рисавания линии
 		/// </summary>
 		private bool _drawingMode;
 
@@ -35,7 +35,7 @@ namespace DrawLineCanvas
 		private Line _tempLine;
 
 		/// <summary>
-		///     Рисуем вертикальную линию
+		///     Вертикальная линия
 		/// </summary>
 		private bool _isVertical = true;
 
@@ -70,7 +70,7 @@ namespace DrawLineCanvas
 		private DateTime _time;
 
 		/// <summary>
-		///     Выделение области определения функции
+		///     Врежим рисавания квадратов для выделения области
 		/// </summary>
 		private bool _drawRectangle;
 
@@ -90,7 +90,7 @@ namespace DrawLineCanvas
 		private static Rectangle _rect = new Rectangle {Stroke = Brushes.Black, StrokeThickness = 2, HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Top};
 
 		/// <summary>
-		///     Прямоугольная область для рисования не затенённой части изображения
+		///     Описывает ширину, высоту и расположение прямоугольника целого числа
 		/// </summary>
 		private static Int32Rect _rectForDraw;
 
@@ -105,8 +105,20 @@ namespace DrawLineCanvas
 		/// </summary>
 		private void ResizeImage()
 		{
+			int kx, ky;
+			if (ImgWell.Height > ScViewer.Height)
+			{
+				ky = Convert.ToInt32(ImgWell.Source.Height/ScViewer.Height);
+				ImgWell.Height = ky * ImgWell.Height;
+				if (ImgWell.Source.Width > ScViewer.Width )
+				{
+					kx = Convert.ToInt32(ImgWell.Source.Width  / ScViewer.Width );
+					ImgWell.Width = kx * ImgWell.Width;
+				}
+			}
 			CnvDraw.Height = ImgWell.Source.Height;
 			CnvDraw.Width = ImgWell.Source.Width;
+			
 		}
 
 		/// <summary>
@@ -116,7 +128,7 @@ namespace DrawLineCanvas
 		/// <param name="e"></param>
 		private void CnvDraw_MouseMove(object sender, MouseEventArgs e)
 		{
-			//режим задания области определения
+			// Определение правой нижней координаты временного прямоугольника
 			if (_drawRectangle && e.LeftButton == MouseButtonState.Pressed)
 			{
 				_secondPoint = e.GetPosition(CnvDraw);
@@ -124,14 +136,12 @@ namespace DrawLineCanvas
 			}
 			else
 			{
-				// если левая кнопка нажата, рисуем временную линию
-
+				// рисуем временную линию
 				if (e.LeftButton == MouseButtonState.Pressed && (DateTime.Now - _time).TotalMilliseconds > 100)
 				{
-					// говорим флагу что мы начали рисовать линию
 					_drawingMode = true;
 					CnvDraw.Children.Remove(_tempLine);
-					// мы рисуем первую линию
+					// первая линия
 					if (_firstLine)
 					{
 						_prevX = e.GetPosition(CnvDraw).X;
@@ -139,16 +149,15 @@ namespace DrawLineCanvas
 						_newX = _prevX;
 						_newY = e.GetPosition(CnvDraw).Y;
 					}
-						// мы рисуем не первую линию
 					else
 					{
-						// рисуем вертикальную линию
+						// вертикальная линия
 						if (_isVertical)
 						{
 							_newX = _prevX;
 							_newY = e.GetPosition(CnvDraw).Y;
 						}
-							// рисуем горизонтальную линию
+							// горизонтальная линия
 						else
 						{
 							_newX = e.GetPosition(CnvDraw).X;
@@ -165,16 +174,14 @@ namespace DrawLineCanvas
 					};
 					CnvDraw.Children.Add(_tempLine);
 				}
-					// если левая кнопка не нажата, и мы были в режиме рисовашек
+					// если левая кнопка не нажата, и мы были в режиме рисования линий
 				else if (_drawingMode)
 				{
 					_drawingMode = false;
-					// Йухххууу! Мы нарисовали первую линию епта!
 					if (_firstLine)
 					{
 						_firstLine = false;
 					}
-
 					// создаем новую линию взамен временной
 					var line = new Line
 					{
@@ -184,52 +191,55 @@ namespace DrawLineCanvas
 						Y2 = _newY,
 						Stroke = Brushes.DarkBlue
 					};
-					line.StrokeThickness = 5;
+					line.StrokeThickness = 2;
 					CnvDraw.Children.Add(line);
 					CnvDraw.Children.Remove(_tempLine);
 					_linesList.Add(new LineInfo(_prevX, _prevY, line));
-					//определение ребаных координат линии
+					// определение координат линии
 					if (Math.Abs(_firstPoint.X) < 0.02)
 					{
-						MessageBox.Show("Задайти область определения!");
+						// если область определения не была задана
+						MessageBox.Show("Задайти область определения!", "Внимание");
 						RemoveLastLine();
 					}
+					// если координаты области определения не были указаны
 					else
 					{
-						if (TextXmin.Text.Equals("") || TextXmax.Text.Equals("") || TextYmin.Text.Equals("") || TextYmax.Text.Equals(""))
+						if (TbXmin.Text.Equals("") || TbXmax.Text.Equals("") || TbYmin.Text.Equals("") || TbYmax.Text.Equals(""))
 						{
-							MessageBox.Show("Вы не ввели все необходимые данные!", "Внимание", MessageBoxButton.OK);
+							MessageBox.Show("Вы не ввели все необходимые данные!", "Внимание");
 						}
+						// если после целой части введен неверный символ
 						else
 						{
 							var ci = new CultureInfo("en-US") { NumberFormat = new NumberFormatInfo { NumberDecimalSeparator = "." } };
 							try
 							{
-								var xmin = Convert.ToDouble(TextXmin.Text.Replace(",", ".").Replace("ю", ".").Replace("б", "."), ci);
-								var xmax = Convert.ToDouble(TextXmax.Text.Replace(",", ".").Replace("ю", ".").Replace("б", "."), ci);
-								var ymin = Convert.ToDouble(TextYmin.Text.Replace(",", ".").Replace("ю", ".").Replace("б", "."), ci);
-								var ymax = Convert.ToDouble(TextYmax.Text.Replace(",", ".").Replace("ю", ".").Replace("б", "."), ci);
-								X.Content = ((_prevX - _firstPoint.X) / (_rect.Width) * (xmin - xmax) + xmin).ToString("N2")
-									+ " ; " + ((_newX - _firstPoint.X) / (_rect.Width) * (xmin - xmax) + xmin).ToString("N2");
-								Y.Content = (Math.Abs((_prevY - _firstPoint.Y) / (_rect.Height) * (ymin - ymax) + ymin)).ToString("N2")
-									+ " ; " + (Math.Abs((_newY - _firstPoint.Y) / (_rect.Height) * (ymin - ymax) + ymin).ToString("N2"));
+								var xmin = Convert.ToDouble(TbXmin.Text.Replace(",", ".").Replace("ю", ".").Replace("б", "."), ci);
+								var xmax = Convert.ToDouble(TbXmax.Text.Replace(",", ".").Replace("ю", ".").Replace("б", "."), ci);
+								var ymin = Convert.ToDouble(TbYmin.Text.Replace(",", ".").Replace("ю", ".").Replace("б", "."), ci);
+								var ymax = Convert.ToDouble(TbYmax.Text.Replace(",", ".").Replace("ю", ".").Replace("б", "."), ci);
+								X.Content = (Math.Abs((_prevX - _firstPoint.X) / (_rect.Width) * (xmax - xmin) + xmin).ToString("N2"))
+									+ " ; " + (Math.Abs((_prevY - _firstPoint.Y) / (_rect.Height) * (ymax - ymin) + ymin)).ToString("N2");
+								Y.Content = (Math.Abs((_newX - _firstPoint.X) / (_rect.Width) * (xmax - xmin) + xmin).ToString("N"))
+									+ " ; " + (Math.Abs((_newY - _firstPoint.Y) / (_rect.Height) * (ymax - ymin) + ymin).ToString("N"));
 								var fs = new FileStream("output.txt", FileMode.Append);
 								var sw = new StreamWriter(fs);
-								sw.WriteLine(X.Content + "\t" + Y.Content);
+								sw.WriteLine("Начальная координата линии:" + X.Content + "\t" + "Конечная координата линии:" + Y.Content);
 								sw.Close();
 								fs.Close();
 							}
+								// при вводе неккоредных символов в поле координат
 							catch (FormatException)
 							{
-								MessageBox.Show("вы ввели некорректные данные!");
+								MessageBox.Show("вы ввели некорректные данные!", "Внимание");
 							}
 						}
 					}
 					// запоминаем координаты
 					_prevX = _newX;
 					_prevY = _newY;
-
-					// переключаем режим рисования на обратный
+					// выходим из режима рисования линий
 					_isVertical = !_isVertical;
 				}
 			}
@@ -248,6 +258,9 @@ namespace DrawLineCanvas
 			}
 		}
 
+		/// <summary>
+		/// Удаление последней нарисованной линии
+		/// </summary>
 		private void RemoveLastLine()
 		{
 			int lastIndex = _linesList.Count - 1;
@@ -271,7 +284,7 @@ namespace DrawLineCanvas
 		/// </summary>
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
-		private void ButLoad_Click(object sender, RoutedEventArgs e)
+		private void BtImageLoad_Click(object sender, RoutedEventArgs e)
 		{
 			var dlg = new OpenFileDialog
 			{
@@ -295,7 +308,7 @@ namespace DrawLineCanvas
 				}
 				catch (NotSupportedException)
 				{
-					MessageBox.Show("Некорректный тип файла!");
+					MessageBox.Show("Некорректный тип файла!", "Внимание");
 				}
 			}
 		}
@@ -305,14 +318,14 @@ namespace DrawLineCanvas
 		/// </summary>
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
-		private void ButCoord_Click(object sender, RoutedEventArgs e)
+		private void BtSelectArea_Click(object sender, RoutedEventArgs e)
 		{
 			CnvDraw.Children.Remove(_rect);
 			while (_linesList.Count != 0)
 			{
 				RemoveLastLine();
 			}
-			_rect = new Rectangle {Stroke = Brushes.Red, StrokeThickness = 5, HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Top};
+			_rect = new Rectangle {Stroke = Brushes.Red, StrokeThickness = 2, HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Top};
 			Canvas.SetTop(_rect, _firstPoint.Y);
 			Canvas.SetLeft(_rect, _firstPoint.X);
 			_drawRectangle = true;
@@ -324,7 +337,7 @@ namespace DrawLineCanvas
 		/// </summary>
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
-		private void MainWindow_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+		private void CnvDraw_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
 		{
 			if (_drawRectangle)
 			{
@@ -334,11 +347,12 @@ namespace DrawLineCanvas
 		}
 
 		/// <summary>
-		///     Отпускание левой кнопки мыши на канвасе, содержащем изображение всего экрана
+		///     Отпускание левой кнопки мыши на канвасе, содержащем изображение всего экрана.
+		/// Построение постоянного квадрата
 		/// </summary>
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
-		private void MainWindow_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+		private void CnvDraw_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
 		{
 			if (_drawRectangle)
 			{
@@ -354,7 +368,7 @@ namespace DrawLineCanvas
 				}
 				else
 				{
-					rectangle.X = (int) (_firstPoint.X); // косяк вадим
+					rectangle.X = (int) (_firstPoint.X);
 					rectangle.Width = (int) (_secondPoint.X - _firstPoint.X);
 					if (rectangle.Width < 1)
 					{
@@ -385,7 +399,7 @@ namespace DrawLineCanvas
 		}
 
 		/// <summary>
-		///     Растянуть/Переместить прямоугольник на указанные координаты
+		///     Растянуть/Переместить прямоугольник на указанные координаты. Построение временного квадрата.
 		/// </summary>
 		/// <param name="pointLeftTop">Левый верхний угол</param>
 		/// <param name="pointRightBottom">Правый нижний угол</param>
@@ -402,7 +416,7 @@ namespace DrawLineCanvas
 				}
 				else
 				{
-					Canvas.SetLeft(_rect, pointLeftTop.X); // косяк Настя
+					Canvas.SetLeft(_rect, pointLeftTop.X);
 					_rect.Width = pointRightBottom.X - pointLeftTop.X;
 					_rectForDraw.X = (int) pointLeftTop.X;
 				}
@@ -422,6 +436,25 @@ namespace DrawLineCanvas
 				_rectForDraw.Width = (int) _rect.Width;
 				_rectForDraw.Height = (int) _rect.Height;
 			}
+		}
+
+		private void BtGreen_Click(object sender, RoutedEventArgs e)
+		{
+			_firstLine = true;
+		}
+
+		private void TgBtOrange_Checked(object sender, RoutedEventArgs e)
+		{
+			_rect = new Rectangle { Stroke = Brushes.Red, StrokeThickness = 2, HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Top, Fill = Brushes.Red};
+			Canvas.SetTop(_rect, _firstPoint.Y);
+			Canvas.SetLeft(_rect, _firstPoint.X);
+			_drawRectangle = true;
+			CnvDraw.Children.Add(_rect);
+		}
+
+		private void BtRed_Click(object sender, RoutedEventArgs e)
+		{
+			_firstLine = true;
 		}
 	}
 }

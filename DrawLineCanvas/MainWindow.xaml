@@ -10,40 +10,72 @@
 			<ColumnDefinition Width="*"/>
 		</Grid.ColumnDefinitions>
 		<StackPanel Grid.Column="0">
-			<Button Name="ButLoad" 
+			<Button Name="BtImageLoad" 
 					Content="Загрузить изображение" 
-					Click="ButLoad_Click" 
+					Click="BtImageLoad_Click" 
 					Margin="5"/>
-			<Button Name="ButCoord" 
+			<Button Name="BtSelectArea" 
 					Content="Задать область определения" 
-					Click="ButCoord_Click" 
+					Click="BtSelectArea_Click" 
 					Margin="5"/>
 			<Label Content="Начальное значение градиента"
 				Margin="5"/>
-			<TextBox Name="TextXmin"
+			<TextBox Name="TbXmin"
 				Margin="5" Text="0.8"/>
 			<Label Content="Конечное значение градиента"
 				Margin="5"/>
-			<TextBox Name="TextXmax"
+			<TextBox Name="TbXmax"
 				Margin="5" Text="2.4"/>
 			<Label Content="Начальное значение глубины"
 				Margin="5"/>
-			<TextBox Name="TextYmin"
+			<TextBox Name="TbYmin"
 				Margin="5" Text="0"/>
 			<Label Content="Конечное значение глубины"
 				Margin="5"/>
-			<TextBox Name="TextYmax"
+			<TextBox Name="TbYmax"
 				Margin="5" Text="4250"/>
-			<Label Content="Эквивалент градиента:" 
+			<Label Content="Начальная точка:" 
 				Margin="5"/>
 			<Label Name="X" 
 				Margin="5"/>
-			<Label Content="Глубина, м:" 
+			<Label Content="Конечная точка:" 
 				Margin="5"/>
 			<Label Name="Y" 
 				Margin="5"/>
-			<Label Name="w"/>
-			<Slider Name="sliZoom"
+			<Button Name="BtGreen" Content="Зеленая линия"
+				Margin="5" Click="BtGreen_Click">
+				<Button.Background>
+					<LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
+						<GradientStop Color="#FFF3F3F3" Offset="0"/>
+						<GradientStop Color="#FFEBEBEB"/>
+						<GradientStop Color="#FFDDDDDD"/>
+						<GradientStop Color="#FF0A8E16" Offset="1"/>
+					</LinearGradientBrush>
+				</Button.Background>
+			</Button>
+			<ToggleButton Name="TgBtOrange" Content="Оранжевая линия"
+				Margin="5" Checked="TgBtOrange_Checked">
+				<ToggleButton.Background>
+					<LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
+						<GradientStop Color="#FFF3F3F3" Offset="0"/>
+						<GradientStop Color="#FFEBEBEB"/>
+						<GradientStop Color="#FFDDDDDD"/>
+						<GradientStop Color="#e69256" Offset="1"/>
+					</LinearGradientBrush>
+				</ToggleButton.Background>
+			</ToggleButton>
+			<Button Name="BtRed" Content="Красная линия"
+				Margin="5" Click="BtRed_Click">
+				<Button.Background>
+					<LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
+						<GradientStop Color="#FFF3F3F3" Offset="0"/>
+						<GradientStop Color="#FFEBEBEB"/>
+						<GradientStop Color="#FFDDDDDD"/>
+						<GradientStop Color="#b70912" Offset="1"/>
+					</LinearGradientBrush>
+				</Button.Background>
+			</Button>
+			<Slider Name="SliZoom"
 				Minimum="0.25" Maximum="2.00" Value="1.00"
 				SmallChange="0.25" LargeChange="0.25"
 				TickFrequency="0.25" TickPlacement="BottomRight"
@@ -58,22 +90,22 @@
 				</Slider.RenderTransform>
 			</Slider>
 		</StackPanel>
-		<ScrollViewer HorizontalScrollBarVisibility="Auto" Grid.Column="1">
+		<ScrollViewer Name="ScViewer" HorizontalScrollBarVisibility="Auto" Grid.Column="1">
 			<Canvas x:Name="CnvDraw" 
 				Background="Transparent" 
-				ClipToBounds="True"
+				ClipToBounds="True" 
 				MouseMove ="CnvDraw_MouseMove"	
-				MouseLeftButtonDown="MainWindow_MouseLeftButtonDown"
-				MouseLeftButtonUp="MainWindow_MouseLeftButtonUp"
+				MouseLeftButtonDown="CnvDraw_MouseLeftButtonDown"
+				MouseLeftButtonUp="CnvDraw_MouseLeftButtonUp"
 				Width="0" Height="0">
 				<Image x:Name="ImgWell"
-						VerticalAlignment="Stretch" 
+						VerticalAlignment="Center" 
 						Stretch="Uniform" 
-						RenderTransformOrigin="0.5,0.5" OverridesDefaultStyle="True"/>
+						OverridesDefaultStyle="True" HorizontalAlignment="Center"/>
 				<Canvas.LayoutTransform>
 						<ScaleTransform
-							ScaleX="{Binding ElementName=sliZoom, Path=Value}"
-							ScaleY="{Binding ElementName=sliZoom, Path=Value}"/>
+							ScaleX="{Binding ElementName=SliZoom, Path=Value}"
+							ScaleY="{Binding ElementName=SliZoom, Path=Value}"/>
 					</Canvas.LayoutTransform>
 			</Canvas>
 		</ScrollViewer>
