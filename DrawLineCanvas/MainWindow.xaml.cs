@@ -94,6 +94,13 @@ namespace DrawLineCanvas
 		/// </summary>
 		private static Int32Rect _rectForDraw;
 
+		/// <summary>
+		///     Список всех нарисованных линий
+		/// </summary>
+		private readonly List<LineWrite> _linesWrite = new List<LineWrite>();
+
+		public int Type;
+
 		public MainWindow()
 		{
 			InitializeComponent();
@@ -199,7 +206,7 @@ namespace DrawLineCanvas
 					if (Math.Abs(_firstPoint.X) < 0.02)
 					{
 						// если область определения не была задана
-						MessageBox.Show("Задайти область определения!", "Внимание");
+						MessageBox.Show("Задайте область определения!", "Внимание");
 						RemoveLastLine();
 					}
 					// если координаты области определения не были указаны
@@ -219,17 +226,19 @@ namespace DrawLineCanvas
 								var xmax = Convert.ToDouble(TbXmax.Text.Replace(",", ".").Replace("ю", ".").Replace("б", "."), ci);
 								var ymin = Convert.ToDouble(TbYmin.Text.Replace(",", ".").Replace("ю", ".").Replace("б", "."), ci);
 								var ymax = Convert.ToDouble(TbYmax.Text.Replace(",", ".").Replace("ю", ".").Replace("б", "."), ci);
+								var gradStart = Math.Abs((_prevX - _firstPoint.X)/(_rect.Width)*(xmax - xmin) + xmin);
+								var gradEnd = Math.Abs((_newX - _firstPoint.X)/(_rect.Width)*(xmax - xmin) + xmin);
+								var depthStart = Math.Abs((_prevY - _firstPoint.Y)/(_rect.Height)*(ymax - ymin) + ymin);
+								var deptEnd = Math.Abs((_newY - _firstPoint.Y)/(_rect.Height)*(ymax - ymin) + ymin);
 								X.Content = (Math.Abs((_prevX - _firstPoint.X) / (_rect.Width) * (xmax - xmin) + xmin).ToString("N2"))
 									+ " ; " + (Math.Abs((_prevY - _firstPoint.Y) / (_rect.Height) * (ymax - ymin) + ymin)).ToString("N2");
 								Y.Content = (Math.Abs((_newX - _firstPoint.X) / (_rect.Width) * (xmax - xmin) + xmin).ToString("N"))
 									+ " ; " + (Math.Abs((_newY - _firstPoint.Y) / (_rect.Height) * (ymax - ymin) + ymin).ToString("N"));
-								var fs = new FileStream("output.txt", FileMode.Append);
-								var sw = new StreamWriter(fs);
-								sw.WriteLine("Начальная координата линии:" + X.Content + "\t" + "Конечная координата линии:" + Y.Content);
-								sw.Close();
-								fs.Close();
+								var type = Type;
+								_linesWrite.Add(new LineWrite(type, gradStart, gradEnd, depthStart, deptEnd));
+								return;
 							}
-								// при вводе неккоредных символов в поле координат
+								// при вводе некорректных символов в поле координат
 							catch (FormatException)
 							{
 								MessageBox.Show("вы ввели некорректные данные!", "Внимание");
@@ -441,6 +450,7 @@ namespace DrawLineCanvas
 		private void BtGreen_Click(object sender, RoutedEventArgs e)
 		{
 			_firstLine = true;
+			Type = 1;
 		}
 
 		private void TgBtOrange_Checked(object sender, RoutedEventArgs e)
@@ -455,6 +465,7 @@ namespace DrawLineCanvas
 		private void BtRed_Click(object sender, RoutedEventArgs e)
 		{
 			_firstLine = true;
+			Type = 2;
 		}
 	}
 }
